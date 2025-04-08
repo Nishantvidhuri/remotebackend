@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: remotebackend
+    env: node
+    region: oregon # or your preferred region
+    plan: free # or other plan
+    buildCommand: cd backend && npm install && cd ../frontend && npm install && npm run build && cd ..
+    startCommand: cd backend && npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 8080
+      - key: GITHUB_TOKEN
+        sync: false # Prompt for this value during deployment
+      - key: REPO_OWNER
+        value: Nishantvidhuri
+      - key: REPO_NAME
+        value: suraj-remote 

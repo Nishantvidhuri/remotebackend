@@ -327,11 +327,26 @@ async function updateContextFile(productType, newProduct, filePath) {
 
 // Serve static React app in production
 if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, '../frontend/build')));
+  // Check if the frontend/build directory exists
+  const frontendBuildPath = path.join(__dirname, '../frontend/build');
   
-  app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../frontend/build', 'index.html'));
-  });
+  // If the directory exists, serve it
+  if (fs.existsSync(frontendBuildPath)) {
+    console.log('Serving frontend build from:', frontendBuildPath);
+    app.use(express.static(frontendBuildPath));
+    
+    app.get('*', (req, res) => {
+      res.sendFile(path.join(frontendBuildPath, 'index.html'));
+    });
+  } else {
+    console.log('WARNING: Frontend build directory not found at:', frontendBuildPath);
+    console.log('Frontend will not be served. Please make sure to build the frontend.');
+    
+    // Create a simple message for the root route
+    app.get('/', (req, res) => {
+      res.send('API server is running. Frontend not found. Please build the React app or deploy frontend separately.');
+    });
+  }
 }
 
 // Start server
