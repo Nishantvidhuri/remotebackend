@@ -2,6 +2,8 @@ import React, { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
 import { FaCamera, FaImage, FaUpload, FaCheck, FaTimes, FaSync } from 'react-icons/fa';
 
+const API_URL = process.env.REACT_APP_API_URL || '';
+
 function App() {
   // State
   const [productType, setProductType] = useState('TV');
@@ -45,7 +47,7 @@ function App() {
     try {
       setGithubStatus({ status: 'checking', message: 'Checking GitHub connection...' });
       
-      const response = await axios.get('/api/check-github');
+      const response = await axios.get(`${API_URL}/api/check-github`);
       
       if (response.data.status === 'connected') {
         setGithubStatus({ status: 'connected', message: 'Connected to GitHub Repository' });
@@ -73,7 +75,7 @@ function App() {
     try {
       setLoading(true);
       
-      const response = await axios.post('/api/save-github-token', { token: githubToken });
+      const response = await axios.post(`${API_URL}/api/save-github-token`, { token: githubToken });
       
       if (response.data.success) {
         showNotification(response.data.message, 'success');
@@ -113,7 +115,7 @@ function App() {
       formData.append('shelf', shelf);
       formData.append('image', selectedImage);
       
-      const response = await axios.post('/api/upload', formData);
+      const response = await axios.post(`${API_URL}/api/upload`, formData);
       
       if (response.data.success) {
         showNotification(response.data.message, 'success');
